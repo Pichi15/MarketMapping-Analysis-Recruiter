@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Environment variables - IMPORTANT: Contains API keys
+.dev.vars
+
+# Wrangler local development files
+.wrangler/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE/Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+
+# Build outputs
+dist/
+build/

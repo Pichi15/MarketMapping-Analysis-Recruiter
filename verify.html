@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Verification</title>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <style>
+        :root {
+            --deriv-red: #ff444f;
+            --background-color: #f0f2f5;
+            --card-background: #ffffff;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .verification-container {
+            background-color: var(--card-background);
+            border-radius: 10px;
+            padding: 3rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        h1 {
+            color: var(--deriv-red);
+            margin: 0 0 1rem 0;
+            font-size: 2rem;
+        }
+
+        p {
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        #turnstile-container {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .loading {
+            display: none;
+            color: var(--deriv-red);
+            font-weight: bold;
+            margin-top: 1rem;
+        }
+
+        .error {
+            color: #d32f2f;
+            margin-top: 1rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="verification-container">
+        <h1>🔒 Security Verification</h1>
+        <p>Please verify you're human to access the site</p>
+        
+        <div id="turnstile-container">
+            <div class="cf-turnstile" 
+                 data-sitekey="0x4AAAAAACLATDkucB9W2Chu" 
+                 data-callback="onTurnstileSuccess"
+                 data-error-callback="onTurnstileError"
+                 data-theme="light">
+            </div>
+        </div>
+
+        <div class="loading" id="loading">Verifying... Please wait</div>
+        <div class="error" id="error">Verification failed. Please refresh the page.</div>
+    </div>
+
+    <script>
+        // Callback when Turnstile completes successfully
+        window.onTurnstileSuccess = function(token) {
+            console.log('Turnstile verified successfully');
+            
+            // Show loading message
+            document.getElementById('loading').style.display = 'block';
+            
+            // Store the token in sessionStorage
+            sessionStorage.setItem('turnstile_token', token);
+            sessionStorage.setItem('turnstile_verified', 'true');
+            sessionStorage.setItem('turnstile_timestamp', Date.now());
+            
+            // Redirect to main page after a brief delay
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 500);
+        };
+
+        // Error callback
+        window.onTurnstileError = function() {
+            console.error('Turnstile verification failed');
+            document.getElementById('error').style.display = 'block';
+            document.getElementById('loading').style.display = 'none';
+        };
+
+        // Check if already verified (within last hour)
+        window.addEventListener('DOMContentLoaded', () => {
+            const verified = sessionStorage.getItem('turnstile_verified');
+            const timestamp = sessionStorage.getItem('turnstile_timestamp');
+            const oneHour = 60 * 60 * 1000; // 1 hour in milliseconds
+            
+            if (verified === 'true' && timestamp) {
+                const elapsed = Date.now() - parseInt(timestamp);
+                if (elapsed < oneHour) {
+                    // Still valid, redirect immediately
+                    window.location.href = 'index.html';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

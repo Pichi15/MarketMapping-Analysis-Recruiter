@@ -1,0 +1,16 @@
+name = "website-host"
+compatibility_date = "2024-01-01"
+pages_build_output_dir = "./"
+
+# KV namespace for rate limiting
+[[kv_namespaces]]
+binding = "RATE_LIMIT_KV"
+id = "c630e2ae42834f6d8550022fa555e2b1"
+
+[vars]
+# Environment variables can be set here for local development
+# For production, set these in the Cloudflare Dashboard
+
+# [env.production.vars]
+# OPENAI_API_KEY = "your-api-key"
+# OPENAI_BASE_URL = "your-base-url"

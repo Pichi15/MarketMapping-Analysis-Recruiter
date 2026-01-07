@@ -1,0 +1,14 @@
+{
+  "name": "website-host",
+  "version": "1.0.0",
+  "description": "An AI-powered market analysis tool using Gemini - deployed on Cloudflare Pages.",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx wrangler pages dev ./",
+    "deploy": "npx wrangler pages deploy ./ --project-name=website-host",
+    "start": "npx wrangler pages dev ./"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}

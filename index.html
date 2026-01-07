@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recruiter Market Analysis - Whiteboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <style>
+        :root {
+            --deriv-red: #ff444f;
+            --background-color: #f0f2f5;
+            --card-background: #ffffff;
+            --text-color: #333;
+            --header-color: #111;
+            --border-color: #ddd;
+        }
+
+        body {
+            font-family: 'Kalam', cursive;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .whiteboard {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            border: none;
+        }
+
+        header h1 {
+            font-size: 3.5rem;
+            color: var(--header-color);
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: var(--deriv-red);
+            font-weight: 400;
+        }
+
+        section {
+            background-color: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        section:hover {
+            transform: scale(1.02) rotate(-1deg);
+        }
+
+        section:nth-child(odd):hover {
+            transform: scale(1.02) rotate(1deg);
+        }
+        
+        h2 {
+            font-size: 2.2rem;
+            color: var(--deriv-red);
+            margin-top: 0;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--deriv-red);
+            padding-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+            margin-top: 1rem;
+        }
+        
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border: none;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        thead th {
+            font-size: 1.2rem;
+            color: var(--header-color);
+            background: none;
+            font-weight: 700;
+        }
+
+        ul {
+            list-style-type: '✏️ ';
+            padding-left: 20px;
+        }
+
+        ul li {
+            padding-left: 10px;
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+        
+        code {
+            background: none;
+            color: var(--deriv-red);
+            font-weight: bold;
+        }
+
+        .salary-range {
+            background-color: #fff9e6;
+            border: 2px dashed var(--deriv-red);
+            padding: 1.5rem;
+            text-align: center;
+            margin-top: 1.5rem;
+            transform: rotate(-2deg);
+            box-shadow: 3px 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .salary-range p {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.2rem;
+        }
+
+        .salary-range strong {
+            font-size: 2.5rem;
+            color: var(--header-color);
+            font-weight: 700;
+        }
+        
+        .note {
+            margin-top: 2rem;
+            font-size: 1rem;
+            color: #555;
+            padding: 1rem;
+            background-color: #f8f9fa;
+        }
+
+        /* AI Feature Styles */
+
+        .input-tabs {
+            display: flex;
+            margin-bottom: 1rem;
+        }
+
+        .tab-btn {
+            background: #eee;
+            color: #555;
+            border: none;
+            padding: 0.8rem 1rem;
+            cursor: pointer;
+            font-family: 'Kalam', cursive;
+            font-size: 1rem;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab-btn.active {
+            background: var(--card-background);
+            color: var(--deriv-red);
+            border-bottom: 2px solid var(--deriv-red);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        textarea, input[type="text"], input[type="file"] {
+            width: 100%;
+            padding: 1rem;
+            font-family: 'Kalam', cursive;
+            font-size: 1.1rem;
+            border: 1px dashed var(--border-color);
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            box-sizing: border-box;
+        }
+        
+        textarea {
+            height: 150px;
+            padding: 1rem;
+            font-family: 'Kalam', cursive;
+            font-size: 1.1rem;
+            border: 1px dashed var(--border-color);
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        button {
+            background-color: var(--deriv-red);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-family: 'Kalam', cursive;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #d93742;
+        }
+        
+        .output-area {
+            background-color: #fff9e6;
+            border: 1px solid #eee;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-size: 1.1rem;
+            min-height: 50px;
+        }
+
+        /* Floating Chat Styles */
+        #market-chat-widget {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            background-color: var(--card-background);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease-in-out;
+            z-index: 1000;
+        }
+
+        #chat-header {
+            background-color: var(--deriv-red);
+            color: white;
+            padding: 0.8rem;
+            font-size: 1.2rem;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        #chat-body {
+            padding: 1rem;
+            height: 300px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #chat-input-container {
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+        }
+
+        #chat-input {
+            flex-grow: 1;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-family: 'Kalam', cursive;
+        }
+        
+        #send-chat-btn {
+            margin-left: 0.5rem;
+            padding: 0.5rem 1rem;
+        }
+
+        .chat-message {
+            margin-bottom: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            max-width: 80%;
+        }
+
+        .user-message {
+            background-color: #f0f2f5;
+            align-self: flex-end;
+        }
+
+        .assistant-message {
+            background-color: #e6f7ff;
+            align-self: flex-start;
+        }
+    </style>
+</head>
+<body>
+    <div class="whiteboard">
+        <header>
+            <h1>Market Analysis & Candidate Mapping: Recruiter at Deriv</h1>
+            <p class="subtitle">A targeted recruitment strategy based on the "Judge of Character" role.</p>
+        </header>
+
+        <section id="core-identity">
+            <h2>1. Core Role Identity: The "Judge of Character"</h2>
+            <p>This is not a standard high-volume, process-driven role. The ideal candidate is a strategic talent partner who can operate in a fluid environment and actively contribute to building a better hiring system.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Key Attribute</th>
+                        <th>Implication for Sourcing & Screening</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Judge of Character</strong></td>
+                        <td>Focus on candidates who demonstrate strong intuition and assessment skills, not just keyword matching.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Process Improver</strong></td>
+                        <td>Look for individuals with a history of identifying and fixing inefficiencies in their previous roles.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AI Collaborator</strong></td>
+                        <td>The candidate doesn't need to be a tech expert but must be eager to leverage technology to automate "noise."</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Resilient & Adaptable</strong></td>
+                        <td>The "busy kitchen being renovated" analogy is crucial. The person must thrive in ambiguity and change.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="candidate-persona">
+            <h2>2. Ideal Candidate Persona</h2>
+            <p>Based on the job description, we are looking for a specific archetype:</p>
+            <ul>
+                <li><strong>Experience Level:</strong> 3–5 years in talent acquisition. This is the sweet spot—experienced enough to be autonomous but not so senior that they are removed from hands-on sourcing.</li>
+                <li><strong>Track Record:</strong> Proven success in closing "difficult" or niche roles. Ask for specific examples during interviews.</li>
+                <li><strong>Mentality:</strong>
+                    <ul>
+                        <li><strong>Efficiency-Obsessed:</strong> They naturally dislike manual, repetitive work and actively seek shortcuts and improvements.</li>
+                        <li><strong>Data-Informed Intuition:</strong> They trust their gut feeling about people but use data to confirm their assessments.</li>
+                        <li><strong>Courageous Communicator:</strong> They are not afraid to challenge hiring managers or deliver difficult feedback to candidates.</li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+
+        <section id="sourcing-landscape">
+            <h2>3. Target Sourcing Landscape (Market Map)</h2>
+            <p>Given the emphasis on proactive headhunting for "passive" candidates, job boards are secondary. The focus should be on direct sourcing.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Target Sector</th>
+                        <th>Why They Are a Good Fit</th>
+                        <th>Sample Companies (Illustrative)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>High-Growth Tech Startups/Scale-ups</strong></td>
+                        <td>Recruiters here are used to ambiguity, high-pressure targets, and the need for process improvement.</td>
+                        <td><code>Grab</code>, <code>Foodpanda</code>, <code>AirAsia Super App</code>, <code>Carsome</code>, <code>Boost</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>In-house TA Teams at established Tech MNCs</strong></td>
+                        <td>These individuals often have strong structured sourcing skills but may be looking for a role with more impact and autonomy.</td>
+                        <td><code>Google</code>, <code>Meta</code>, <code>Microsoft</code>, <code>IBM</code>, <code>Oracle</code> (Malaysia offices)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Specialized Recruitment Agencies (Tech Focus)</strong></td>
+                        <td>Agency recruiters have excellent headhunting and closing skills. The ideal candidate is one who is tired of the agency model and wants to build something in-house.</td>
+                        <td><code>Robert Walters</code>, <code>Michael Page</code>, <code>Hays</code> (specifically their tech desks)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="outreach-generator">
+            <h2>✨ Forensic Outreach Generator</h2>
+            <p>Generate a hyper-personalized outreach message by pasting text, uploading a resume, or providing a profile URL.</p>
+            
+            <div class="input-tabs">
+                <button class="tab-btn active" data-tab="text">Paste Text</button>
+                <button class="tab-btn" data-tab="file">Upload Resume</button>
+                <button class="tab-btn" data-tab="url">Profile URL</button>
+            </div>
+
+            <div id="text-input-tab" class="tab-content active">
+                <textarea id="candidate-profile-text" placeholder="Paste candidate profile text here..."></textarea>
+            </div>
+            <div id="file-input-tab" class="tab-content">
+                <input type="file" id="resume-file-input" accept=".pdf">
+            </div>
+            <div id="url-input-tab" class="tab-content">
+                <input type="text" id="profile-url-input" placeholder="https://www.linkedin.com/in/candidate...">
+            </div>
+            
+            <button id="generate-outreach-btn">Generate Message</button>
+            <div id="outreach-output" class="output-area"></div>
+        </section>
+
+        <section id="compensation-analysis">
+            <h2>4. Estimated Compensation Analysis (Malaysia)</h2>
+            <p>The salary for a Talent Acquisition Specialist/Recruiter in Malaysia with 3–5 years of experience varies based on the industry and company scale. The market rate is competitive for candidates with a strong track record in closing technical or difficult-to-fill roles.</p>
+            <div class="salary-range">
+                <p>Estimated Monthly Salary Range:</p>
+                <strong>MYR 7,500 – MYR 12,000</strong>
+            </div>
+            <div class="note">
+                <p><strong>Note:</strong> This range is an estimate and can be higher for candidates with exceptional skills in technical sourcing or a proven ability to build and improve recruitment systems.</p>
+                <p style="margin-top: 1rem; font-size: 0.9rem;"><strong>📚 Sources:</strong> 
+                    <a href="https://www.glassdoor.com/Salaries/malaysia-talent-acquisition-specialist-salary-SRCH_IL.0,8_IN170_KO9,38.htm" target="_blank" rel="noopener" style="color: var(--deriv-red);">Glassdoor Malaysia</a> | 
+                    <a href="https://www.payscale.com/research/MY/Job=Talent_Acquisition_Specialist/Salary" target="_blank" rel="noopener" style="color: var(--deriv-red);">PayScale</a> | 
+                    <a href="https://my.indeed.com/career/talent-acquisition-specialist/salaries" target="_blank" rel="noopener" style="color: var(--deriv-red);">Indeed Malaysia</a> | 
+                    <a href="https://www.hays.com.my/salary-guide" target="_blank" rel="noopener" style="color: var(--deriv-red);">Hays Salary Guide 2024</a>
+                </p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Invisible Turnstile Widget for auto-refresh -->
+    <div id="turnstile-container">
+        <div class="cf-turnstile" 
+             data-sitekey="0x4AAAAAACLATDkucB9W2Chu" 
+             data-callback="onTurnstileRefresh"
+             data-size="invisible"
+             data-theme="light">
+        </div>
+    </div>
+
+    <!-- Market Intelligence Chat Widget -->
+    <div id="market-chat-widget">
+        <div id="chat-header">✨ Market Intelligence Chat</div>
+        <div id="chat-body">
+            <div class="chat-message assistant-message">Ask me about the Malaysian talent market!</div>
+        </div>
+        <div id="chat-input-container">
+            <input type="text" id="chat-input" placeholder="Ask a question...">
+            <button id="send-chat-btn">Send</button>
+        </div>
+    </div>
+
+    <script>
+        // Check if user has verified via Turnstile
+        window.addEventListener('DOMContentLoaded', () => {
+            const verified = sessionStorage.getItem('turnstile_verified');
+            const timestamp = sessionStorage.getItem('turnstile_timestamp');
+            const oneHour = 60 * 60 * 1000; // 1 hour in milliseconds
+            
+            if (!verified || verified !== 'true') {
+                // Not verified, redirect to verification page
+                window.location.href = 'verify.html';
+                return;
+            }
+            
+            // Check if verification has expired (older than 1 hour)
+            if (timestamp) {
+                const elapsed = Date.now() - parseInt(timestamp);
+                if (elapsed >= oneHour) {
+                    // Expired, redirect to verification page
+                    sessionStorage.removeItem('turnstile_token');
+                    sessionStorage.removeItem('turnstile_verified');
+                    sessionStorage.removeItem('turnstile_timestamp');
+                    window.location.href = 'verify.html';
+                    return;
+                }
+            }
+        });
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
