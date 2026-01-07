@@ -5,7 +5,7 @@ pages_build_output_dir = "./"
 # KV namespace for rate limiting
 [[kv_namespaces]]
 binding = "RATE_LIMIT_KV"
-id = "c630e2ae42834f6d8550022fa555e2b1"
+id = "7aa3b24e7a3944548e3a33674dcf7eeb"
 
 [vars]
 # Environment variables can be set here for local development
