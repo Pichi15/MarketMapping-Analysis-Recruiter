@@ -77,12 +77,6 @@ function rateLimitResponse(rateLimitResult, corsHeaders) {
 
 // Turnstile token verification helper
 async function verifyTurnstileToken(token, env) {
-  // Skip Turnstile verification in local development
-  if (env.TURNSTILE_SECRET_KEY === 'SKIP_FOR_LOCAL_DEV') {
-    console.log('Skipping Turnstile verification for local development');
-    return { success: true };
-  }
-
   if (!token) {
     return { success: false, error: 'No Turnstile token provided' };
   }
