@@ -10,7 +10,9 @@ window.onTurnstileRefresh = function(token) {
 
 // Function to disable/enable all interactive buttons
 function setButtonsEnabled(enabled) {
-    const buttons = document.querySelectorAll('button');
+    // Only disable buttons that trigger network actions.
+    // This prevents locking out modal controls like Close.
+    const buttons = document.querySelectorAll('button[data-action-button="true"]');
     buttons.forEach(button => {
         button.disabled = !enabled;
         button.style.opacity = enabled ? '1' : '0.5';
@@ -78,6 +80,11 @@ function completeRequest(requestId) {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+    // Initialize icons
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.lucide.createIcons();
+    }
+
     // --- Health Check ---
     try {
         const response = await fetch('/api/health');
@@ -102,8 +109,59 @@ document.addEventListener('DOMContentLoaded', async () => {
         body.prepend(errorDiv);
     }
 
+    // --- Modal UI Wiring ---
+    const modalOverlay = document.getElementById('ai-modal');
+    const closeModalBtn = document.getElementById('close-modal');
+    const openOutreachBtn = document.getElementById('open-outreach');
+    const openIntelBtn = document.getElementById('open-intel');
+    const toolOutreach = document.getElementById('tool-outreach');
+    const toolChat = document.getElementById('tool-chat');
+    const modalTitle = document.getElementById('ai-modal-title');
+    const modalIcon = document.getElementById('ai-modal-icon');
+
+    const openModal = (tool) => {
+        if (!modalOverlay) return;
+        modalOverlay.classList.add('open');
+        modalOverlay.setAttribute('aria-hidden', 'false');
+
+        if (tool === 'outreach') {
+            toolOutreach?.classList.add('active');
+            toolChat?.classList.remove('active');
+            if (modalTitle) modalTitle.textContent = 'Character-First Outreach';
+            if (modalIcon) modalIcon.setAttribute('data-lucide', 'user-plus');
+        } else {
+            toolChat?.classList.add('active');
+            toolOutreach?.classList.remove('active');
+            if (modalTitle) modalTitle.textContent = '2026 Market Intelligence';
+            if (modalIcon) modalIcon.setAttribute('data-lucide', 'brain-circuit');
+        }
+
+        // Re-create icons after swapping data-lucide
+        if (window.lucide && typeof window.lucide.createIcons === 'function') {
+            window.lucide.createIcons();
+        }
+    };
+
+    const closeModal = () => {
+        if (!modalOverlay) return;
+        modalOverlay.classList.remove('open');
+        modalOverlay.setAttribute('aria-hidden', 'true');
+    };
+
+    openOutreachBtn?.addEventListener('click', () => openModal('outreach'));
+    openIntelBtn?.addEventListener('click', () => openModal('chat'));
+    closeModalBtn?.addEventListener('click', closeModal);
+    modalOverlay?.addEventListener('click', (e) => {
+        // close when clicking the dark overlay but not when clicking inside modal
+        if (e.target === modalOverlay) closeModal();
+    });
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+    });
+
     // --- Forensic Outreach Generator ---
     const outreachOutput = document.getElementById('outreach-output');
+    const outreachOutputText = document.getElementById('outreach-output-text');
     const generateBtn = document.getElementById('generate-outreach-btn');
 
     const textInput = document.getElementById('candidate-profile-text');
@@ -122,13 +180,45 @@ document.addEventListener('DOMContentLoaded', async () => {
             tab.classList.add('active');
 
             tabContents.forEach(content => {
-                content.classList.remove('active');
+                content.classList.add('hidden');
             });
-            document.getElementById(`${tabName}-input-tab`).classList.add('active');
+            const next = document.getElementById(`${tabName}-input-tab`);
+            next?.classList.remove('hidden');
             
             activeTab = tabName;
         });
     });
+
+    const setOutreachOutput = (text) => {
+        if (!outreachOutput || !outreachOutputText) return;
+        outreachOutput.style.display = 'block';
+        outreachOutputText.textContent = text;
+    };
+
+    const clearOutreachOutput = () => {
+        if (!outreachOutput || !outreachOutputText) return;
+        outreachOutputText.textContent = '';
+        outreachOutput.style.display = 'none';
+    };
+
+    // URL allowlist validation to reduce SSRF / malicious input patterns
+    const isAllowedProfileUrl = (value) => {
+        if (!value) return false;
+        if (value.length > 2048) return false;
+        let url;
+        try {
+            url = new URL(value);
+        } catch {
+            return false;
+        }
+        if (url.protocol !== 'https:') return false;
+        // allowlist common profile domains; can be expanded later
+        const allowedHosts = new Set([
+            'www.linkedin.com',
+            'linkedin.com'
+        ]);
+        return allowedHosts.has(url.hostname);
+    };
 
     // Helper function to convert file to base64
     const fileToBase64 = (file) => {
@@ -145,7 +235,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     generateBtn.addEventListener('click', async () => {
-        outreachOutput.textContent = 'Generating message...';
+        clearOutreachOutput();
+        setOutreachOutput('Generating message...');
         let endpoint = '';
         let body;
         let headers = { 'Content-Type': 'application/json' };
@@ -154,7 +245,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (activeTab === 'text') {
                 const profileText = textInput.value;
                 if (!profileText.trim()) {
-                    outreachOutput.textContent = 'Please paste a candidate profile first.';
+                    setOutreachOutput('Please paste a candidate profile first.');
+                    return;
+                }
+                if (profileText.length > 20000) {
+                    setOutreachOutput('Profile text is too long (max 20,000 characters).');
                     return;
                 }
                 endpoint = '/api/generate-outreach-text';
@@ -163,18 +258,25 @@ document.addEventListener('DOMContentLoaded', async () => {
             } else if (activeTab === 'file') {
                 const file = fileInput.files[0];
                 if (!file) {
-                    outreachOutput.textContent = 'Please select a resume file first.';
+                    setOutreachOutput('Please select a resume file first.');
                     return;
                 }
                 
                 // Check file type
                 if (file.type !== 'application/pdf') {
-                    outreachOutput.textContent = 'Please upload a PDF file.';
+                    setOutreachOutput('Please upload a PDF file.');
+                    return;
+                }
+
+                // Basic size limit (client-side) - helps prevent giant uploads
+                const maxBytes = 5 * 1024 * 1024; // 5MB
+                if (file.size > maxBytes) {
+                    setOutreachOutput('PDF is too large. Please upload a PDF ≤ 5MB.');
                     return;
                 }
 
                 // Convert PDF to base64
-                outreachOutput.textContent = 'Reading file...';
+                setOutreachOutput('Reading file...');
                 const pdfBase64 = await fileToBase64(file);
                 
                 endpoint = '/api/generate-outreach-file';
@@ -186,11 +288,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             } else if (activeTab === 'url') {
                 const profileUrl = urlInput.value;
                 if (!profileUrl.trim()) {
-                    outreachOutput.textContent = 'Please enter a profile URL first.';
+                    setOutreachOutput('Please enter a profile URL first.');
+                    return;
+                }
+
+                if (!isAllowedProfileUrl(profileUrl.trim())) {
+                    setOutreachOutput('Please provide a valid https:// LinkedIn profile URL.');
                     return;
                 }
                 endpoint = '/api/generate-outreach-url';
-                body = JSON.stringify({ profileUrl });
+                body = JSON.stringify({ profileUrl: profileUrl.trim() });
             }
 
             // Get Turnstile token - returns { token, requestId } for ownership tracking
@@ -200,14 +307,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 token = result.token;
                 requestId = result.requestId;
             } catch (error) {
-                outreachOutput.textContent = error.message || 'Security verification failed. Please refresh the page.';
+                setOutreachOutput(error.message || 'Security verification failed. Please refresh the page.');
                 return;
             }
 
             // Add Turnstile token to headers
             headers['CF-Turnstile-Token'] = token;
 
-            outreachOutput.textContent = 'Generating message...';
+            setOutreachOutput('Generating message...');
             try {
                 const response = await fetch(endpoint, { method: 'POST', headers, body });
 
@@ -217,7 +324,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
 
                 const data = await response.json();
-                outreachOutput.textContent = data.outreachMessage;
+                setOutreachOutput(data.outreachMessage);
             } finally {
                 // Re-enable buttons after request completes - only if we own the lock
                 completeRequest(requestId);
@@ -225,32 +332,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         } catch (error) {
             console.error('Error:', error);
-            outreachOutput.textContent = `An error occurred: ${error.message}`;
+            setOutreachOutput(`An error occurred: ${error.message}`);
         }
     });
 
 
     // --- Market Intelligence Chat ---
-    const chatHeader = document.getElementById('chat-header');
-    const chatWidget = document.getElementById('market-chat-widget');
     const chatBody = document.getElementById('chat-body');
     const chatInput = document.getElementById('chat-input');
     const sendChatBtn = document.getElementById('send-chat-btn');
-    let isChatOpen = true;
-
-    chatHeader.addEventListener('click', () => {
-        isChatOpen = !isChatOpen;
-        const bodyEl = chatWidget.querySelector('#chat-body');
-        const inputEl = chatWidget.querySelector('#chat-input-container');
-
-        if (isChatOpen) {
-            bodyEl.style.display = 'flex';
-            inputEl.style.display = 'flex';
-        } else {
-            bodyEl.style.display = 'none';
-            inputEl.style.display = 'none';
-        }
-    });
 
     const addMessage = (text, sender) => {
         const messageDiv = document.createElement('div');
@@ -263,6 +353,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const handleChatSend = async () => {
         const query = chatInput.value;
         if (!query.trim()) return;
+        if (query.length > 800) {
+            addMessage('Please keep questions under 800 characters.', 'assistant');
+            return;
+        }
 
         addMessage(query, 'user');
         chatInput.value = '';

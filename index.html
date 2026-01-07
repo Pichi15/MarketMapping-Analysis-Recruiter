@@ -3,427 +3,867 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recruiter Market Analysis - Whiteboard</title>
+    <title>Market Analysis & Candidate Mapping - Recruiter at Deriv</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <script src="https://unpkg.com/lucide@latest" defer></script>
     <style>
         :root {
-            --deriv-red: #ff444f;
-            --background-color: #f0f2f5;
-            --card-background: #ffffff;
-            --text-color: #333;
-            --header-color: #111;
-            --border-color: #ddd;
+            --deriv-red: #dc2626; /* red-600 */
+            --slate-50: #f8fafc;
+            --slate-100: #f1f5f9;
+            --slate-200: #e2e8f0;
+            --slate-400: #94a3b8;
+            --slate-500: #64748b;
+            --slate-800: #1f2937;
+            --slate-900: #0f172a;
+            --shadow-xl: 0 20px 40px rgba(2,6,23,0.12);
         }
+
+        * { box-sizing: border-box; }
 
         body {
-            font-family: 'Kalam', cursive;
-            background-color: var(--background-color);
-            color: var(--text-color);
             margin: 0;
-            padding: 2rem;
+            font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: var(--slate-50);
+            color: var(--slate-900);
+        }
+
+        .page {
+            min-height: 100vh;
+            padding: 16px;
+            padding-bottom: 90px;
+        }
+
+        @media (min-width: 768px) {
+            .page { padding: 32px; padding-bottom: 110px; }
+        }
+
+        .container {
+            max-width: 1120px;
+            margin: 0 auto;
+        }
+
+        .header {
             display: flex;
-            justify-content: center;
-            align-items: flex-start;
+            flex-direction: column;
+            gap: 18px;
+            margin-bottom: 22px;
         }
 
-        .whiteboard {
-            max-width: 1200px;
-            width: 100%;
+        @media (min-width: 768px) {
+            .header { flex-direction: row; align-items: center; justify-content: space-between; }
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 3rem;
-            border: none;
+        .badges {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
-        header h1 {
-            font-size: 3.5rem;
-            color: var(--header-color);
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            padding: 4px 8px;
+            border-radius: 10px;
+            border: 1px solid var(--slate-200);
+            background: white;
+            color: var(--slate-900);
+        }
+
+        .badge.red {
+            background: #fee2e2;
+            color: var(--deriv-red);
+            border-color: #fecaca;
+        }
+
+        h1 {
+            margin: 10px 0 6px 0;
+            font-size: 44px;
+            line-height: 1.0;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+            font-weight: 900;
+            font-style: italic;
+        }
+
+        @media (min-width: 768px) {
+            h1 { font-size: 56px; }
+        }
+
+        .headline-accent { color: var(--deriv-red); }
+
+        .subhead {
             margin: 0;
-            font-weight: 700;
+            color: var(--slate-500);
+            font-weight: 600;
+            max-width: 52ch;
         }
 
-        .subtitle {
-            font-size: 1.5rem;
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border-radius: 18px;
+            padding: 10px 16px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            cursor: pointer;
+            border: 2px solid transparent;
+            background: white;
+            color: var(--slate-900);
+            box-shadow: 0 8px 18px rgba(2,6,23,0.08);
+            transition: transform 0.06s ease, background 0.2s ease, border-color 0.2s ease;
+        }
+
+        .btn:active { transform: scale(0.98); }
+
+        .btn.primary {
+            background: var(--slate-900);
+            color: white;
+        }
+
+        .btn.outline-red {
+            border-color: var(--deriv-red);
             color: var(--deriv-red);
-            font-weight: 400;
+            background: white;
         }
 
-        section {
-            background-color: var(--card-background);
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            padding: 1.5rem 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.2s ease-in-out;
+        .btn.outline-red:hover { background: #fff1f2; }
+        .btn.primary:hover { background: #111c35; }
+
+        .board {
+            position: relative;
+            background: white;
+            border: 1px solid var(--slate-200);
+            border-radius: 26px;
+            padding: 18px;
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
         }
 
-        section:hover {
-            transform: scale(1.02) rotate(-1deg);
+        @media (min-width: 768px) {
+            .board { padding: 40px 48px; }
         }
 
-        section:nth-child(odd):hover {
-            transform: scale(1.02) rotate(1deg);
-        }
-        
-        h2 {
-            font-size: 2.2rem;
-            color: var(--deriv-red);
-            margin-top: 0;
-            margin-bottom: 1rem;
-            border-bottom: 2px solid var(--deriv-red);
-            padding-bottom: 0.5rem;
-            font-weight: 700;
+        .board::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            opacity: 0.03;
+            pointer-events: none;
+            background-image: radial-gradient(#000 1.5px, transparent 1.5px);
+            background-size: 32px 32px;
         }
 
-        table {
+        .grid {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 18px;
+        }
+
+        @media (min-width: 768px) {
+            .grid { grid-template-columns: repeat(2, 1fr); gap: 22px; }
+        }
+
+        @media (min-width: 1100px) {
+            .grid { grid-template-columns: repeat(4, 1fr); }
+        }
+
+        .section-header {
+            grid-column: 1 / -1;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--slate-200);
+            margin-top: 18px;
+            margin-bottom: 4px;
+        }
+
+        .section-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .section-title {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -0.03em;
+            margin: 0;
+        }
+
+        .section-title .dot {
+            width: 30px;
+            height: 30px;
+            border-radius: 999px;
+            background: var(--deriv-red);
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .section-subtitle {
+            margin: 6px 0 0 0;
+            color: var(--slate-500);
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .sticky {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 10px;
-            margin-top: 1rem;
-        }
-        
-        th, td {
-            padding: 1rem;
-            text-align: left;
-            border: none;
-            border-bottom: 1px dashed var(--border-color);
+            min-height: 220px;
+            border-radius: 14px;
+            padding: 18px;
+            box-shadow: 0 14px 28px rgba(2,6,23,0.08);
+            border-right: 4px solid rgba(2,6,23,0.08);
+            border-bottom: 4px solid rgba(2,6,23,0.08);
+            transform: rotate(1deg);
+            transition: transform 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        thead th {
-            font-size: 1.2rem;
-            color: var(--header-color);
-            background: none;
+        .sticky:hover { transform: rotate(0deg); }
+
+        .sticky .top {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sticky h3 {
+            margin: 0;
+            font-size: 12px;
+            font-weight: 900;
+            color: #1f2937;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+        }
+
+        .sticky .content {
+            white-space: pre-line;
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+            line-height: 1.45;
+        }
+
+        .bg-red { background: #fef2f2; }
+        .bg-orange { background: #fff7ed; }
+        .bg-blue { background: #eff6ff; }
+        .bg-slate { background: #f1f5f9; }
+
+        .col-span-full { grid-column: 1 / -1; }
+
+        .triple {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        @media (min-width: 768px) {
+            .triple { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        .panel {
+            background: var(--slate-50);
+            border: 1px solid var(--slate-200);
+            border-radius: 18px;
+            padding: 18px;
+            transition: border-color 0.2s ease;
+        }
+
+        .panel h4 {
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel ul {
+            margin: 0;
+            padding-left: 18px;
+            color: #334155;
             font-weight: 700;
+            font-size: 13px;
         }
 
-        ul {
-            list-style-type: '✏️ ';
-            padding-left: 20px;
+        .panel li { margin: 8px 0; }
+
+        .money {
+            grid-column: 1 / -1;
+            background: var(--slate-900);
+            color: white;
+            border-radius: 26px;
+            padding: 22px;
+            display: grid;
+            gap: 14px;
+            grid-template-columns: 1fr;
         }
 
-        ul li {
-            padding-left: 10px;
-            margin-bottom: 0.8rem;
-            font-size: 1.1rem;
+        @media (min-width: 768px) {
+            .money { grid-template-columns: repeat(3, 1fr); padding: 28px; }
         }
-        
-        code {
-            background: none;
+
+        .money .label {
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: var(--slate-400);
+        }
+
+        .money .value {
+            font-size: 34px;
+            font-weight: 900;
+            font-style: italic;
+            margin: 6px 0;
+        }
+
+        .money .value.red { color: #f87171; }
+        .money .value.green { color: #4ade80; }
+
+        .money .note {
+            font-size: 11px;
+            color: #9ca3af;
+            font-style: italic;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .money .ref {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.10);
+            padding: 12px;
+            border-radius: 14px;
+            font-size: 12px;
+        }
+
+        .money a { color: #60a5fa; text-decoration: none; }
+        .money a:hover { text-decoration: underline; }
+
+        .footer {
+            margin-top: 34px;
+            padding-top: 18px;
+            border-top: 1px solid var(--slate-100);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+            opacity: 0.65;
+        }
+
+        .footer .left {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: var(--slate-400);
+        }
+
+        .footer .right {
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--slate-300);
+            font-style: italic;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.45);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            z-index: 1000;
+        }
+
+        .modal-overlay.open { display: flex; }
+
+        .modal {
+            width: 100%;
+            max-width: 860px;
+            background: white;
+            border-radius: 26px;
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+        }
+
+        .modal-header {
+            padding: 16px 18px;
+            border-bottom: 1px solid var(--slate-100);
+            background: rgba(248, 250, 252, 0.75);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .modal-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             color: var(--deriv-red);
-            font-weight: bold;
         }
 
-        .salary-range {
-            background-color: #fff9e6;
-            border: 2px dashed var(--deriv-red);
-            padding: 1.5rem;
-            text-align: center;
-            margin-top: 1.5rem;
-            transform: rotate(-2deg);
-            box-shadow: 3px 3px 10px rgba(0,0,0,0.1);
+        .modal-title h2 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-style: italic;
+            letter-spacing: -0.03em;
         }
 
-        .salary-range p {
-            margin: 0 0 0.5rem 0;
-            font-size: 1.2rem;
+        .icon-btn {
+            border: none;
+            background: transparent;
+            border-radius: 999px;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .salary-range strong {
-            font-size: 2.5rem;
-            color: var(--header-color);
-            font-weight: 700;
-        }
-        
-        .note {
-            margin-top: 2rem;
-            font-size: 1rem;
-            color: #555;
-            padding: 1rem;
-            background-color: #f8f9fa;
+        .icon-btn:hover { background: var(--slate-200); }
+
+        .modal-body {
+            padding: 18px;
+            overflow: auto;
         }
 
-        /* AI Feature Styles */
+        .tool { display: none; }
+        .tool.active { display: block; }
 
         .input-tabs {
             display: flex;
-            margin-bottom: 1rem;
+            gap: 10px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
         }
 
         .tab-btn {
-            background: #eee;
-            color: #555;
-            border: none;
-            padding: 0.8rem 1rem;
+            border: 2px solid var(--slate-200);
+            background: white;
+            padding: 10px 12px;
+            border-radius: 16px;
             cursor: pointer;
-            font-family: 'Kalam', cursive;
-            font-size: 1rem;
-            border-bottom: 2px solid transparent;
+            font-weight: 800;
+            color: #334155;
         }
 
         .tab-btn.active {
-            background: var(--card-background);
+            border-color: var(--deriv-red);
             color: var(--deriv-red);
-            border-bottom: 2px solid var(--deriv-red);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
+            background: #fff1f2;
         }
 
         textarea, input[type="text"], input[type="file"] {
             width: 100%;
-            padding: 1rem;
-            font-family: 'Kalam', cursive;
-            font-size: 1.1rem;
-            border: 1px dashed var(--border-color);
-            border-radius: 5px;
-            margin-bottom: 1rem;
-            box-sizing: border-box;
-        }
-        
-        textarea {
-            height: 150px;
-            padding: 1rem;
-            font-family: 'Kalam', cursive;
-            font-size: 1.1rem;
-            border: 1px dashed var(--border-color);
-            border-radius: 5px;
-            margin-bottom: 1rem;
+            border: 2px solid var(--slate-200);
+            background: var(--slate-50);
+            border-radius: 18px;
+            padding: 14px;
+            font-weight: 600;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s ease;
         }
 
-        button {
-            background-color: var(--deriv-red);
+        textarea:focus, input[type="text"]:focus {
+            border-color: var(--deriv-red);
+            background: white;
+        }
+
+        textarea { min-height: 160px; resize: vertical; }
+
+        .action-btn {
+            width: 100%;
+            margin-top: 12px;
+            background: var(--deriv-red);
             color: white;
-            padding: 0.8rem 1.5rem;
             border: none;
-            border-radius: 5px;
-            font-family: 'Kalam', cursive;
-            font-size: 1.2rem;
+            padding: 14px 16px;
+            border-radius: 18px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            box-shadow: 0 14px 30px rgba(220, 38, 38, 0.25);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
-        button:hover {
-            background-color: #d93742;
+        .action-btn:hover { background: #b91c1c; }
+
+        .action-btn:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
         }
-        
-        .output-area {
-            background-color: #fff9e6;
-            border: 1px solid #eee;
-            padding: 1.5rem;
-            margin-top: 1.5rem;
-            border-radius: 5px;
+
+        .output {
+            margin-top: 16px;
+            background: var(--slate-900);
+            color: #e2e8f0;
+            border-radius: 18px;
+            padding: 16px;
+            border-left: 8px solid var(--deriv-red);
             white-space: pre-wrap;
-            font-size: 1.1rem;
-            min-height: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            line-height: 1.55;
         }
 
-        /* Floating Chat Styles */
-        #market-chat-widget {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 350px;
-            background-color: var(--card-background);
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            overflow: hidden;
+        .output-label {
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: #fb7185;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        /* Chat */
+        .chat {
             display: flex;
             flex-direction: column;
-            transition: all 0.3s ease-in-out;
-            z-index: 1000;
+            gap: 12px;
         }
 
-        #chat-header {
-            background-color: var(--deriv-red);
-            color: white;
-            padding: 0.8rem;
-            font-size: 1.2rem;
-            text-align: center;
-            cursor: pointer;
-        }
-
-        #chat-body {
-            padding: 1rem;
-            height: 300px;
+        .chat-body {
+            background: var(--slate-50);
+            border: 2px solid var(--slate-200);
+            border-radius: 18px;
+            padding: 12px;
+            min-height: 220px;
+            max-height: 380px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-        }
-
-        #chat-input-container {
-            padding: 1rem;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-        }
-
-        #chat-input {
-            flex-grow: 1;
-            padding: 0.5rem;
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            font-family: 'Kalam', cursive;
-        }
-        
-        #send-chat-btn {
-            margin-left: 0.5rem;
-            padding: 0.5rem 1rem;
+            gap: 10px;
         }
 
         .chat-message {
-            margin-bottom: 1rem;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            max-width: 80%;
+            max-width: 85%;
+            padding: 10px 12px;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 13px;
+            line-height: 1.45;
+            white-space: pre-wrap;
         }
 
-        .user-message {
-            background-color: #f0f2f5;
+        .chat-message.user-message {
             align-self: flex-end;
+            background: #e2e8f0;
+            color: #0f172a;
         }
 
-        .assistant-message {
-            background-color: #e6f7ff;
+        .chat-message.assistant-message {
             align-self: flex-start;
+            background: #dbeafe;
+            color: #0f172a;
         }
+
+        .chat-message.assistant-loading-message {
+            align-self: flex-start;
+            background: #f1f5f9;
+            color: #334155;
+            font-style: italic;
+        }
+
+        .chat-input-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input-row input {
+            flex: 1;
+        }
+
+        .chat-send {
+            width: auto;
+            padding: 14px 16px;
+            border-radius: 18px;
+            background: var(--slate-900);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 900;
+        }
+
+        .chat-send:hover { background: #111c35; }
+
+        .muted {
+            color: var(--slate-500);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .hidden { display: none; }
     </style>
 </head>
 <body>
-    <div class="whiteboard">
-        <header>
-            <h1>Market Analysis & Candidate Mapping: Recruiter at Deriv</h1>
-            <p class="subtitle">A targeted recruitment strategy based on the "Judge of Character" role.</p>
-        </header>
+    <div class="page">
+        <div class="container">
+            <!-- Header Area -->
+            <div class="header">
+                <div>
+                    <div class="badges">
+                        <span class="badge"><i data-lucide="shield-check" width="14" height="14"></i> Internal Strategy</span>
+                        <span class="badge red"><i data-lucide="calendar" width="14" height="14"></i> Updated: Jan 2026</span>
+                    </div>
+                    <h1>
+                        Deriv: <span class="headline-accent">Judge of Character</span>
+                    </h1>
+                    <p class="subhead">
+                        Market Analysis & Candidate Mapping for a character-first recruiter role in Malaysia.
+                    </p>
+                </div>
 
-        <section id="core-identity">
-            <h2>1. Core Role Identity: The "Judge of Character"</h2>
-            <p>This is not a standard high-volume, process-driven role. The ideal candidate is a strategic talent partner who can operate in a fluid environment and actively contribute to building a better hiring system.</p>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Key Attribute</th>
-                        <th>Implication for Sourcing & Screening</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Judge of Character</strong></td>
-                        <td>Focus on candidates who demonstrate strong intuition and assessment skills, not just keyword matching.</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Process Improver</strong></td>
-                        <td>Look for individuals with a history of identifying and fixing inefficiencies in their previous roles.</td>
-                    </tr>
-                    <tr>
-                        <td><strong>AI Collaborator</strong></td>
-                        <td>The candidate doesn't need to be a tech expert but must be eager to leverage technology to automate "noise."</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Resilient & Adaptable</strong></td>
-                        <td>The "busy kitchen being renovated" analogy is crucial. The person must thrive in ambiguity and change.</td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-
-        <section id="candidate-persona">
-            <h2>2. Ideal Candidate Persona</h2>
-            <p>Based on the job description, we are looking for a specific archetype:</p>
-            <ul>
-                <li><strong>Experience Level:</strong> 3–5 years in talent acquisition. This is the sweet spot—experienced enough to be autonomous but not so senior that they are removed from hands-on sourcing.</li>
-                <li><strong>Track Record:</strong> Proven success in closing "difficult" or niche roles. Ask for specific examples during interviews.</li>
-                <li><strong>Mentality:</strong>
-                    <ul>
-                        <li><strong>Efficiency-Obsessed:</strong> They naturally dislike manual, repetitive work and actively seek shortcuts and improvements.</li>
-                        <li><strong>Data-Informed Intuition:</strong> They trust their gut feeling about people but use data to confirm their assessments.</li>
-                        <li><strong>Courageous Communicator:</strong> They are not afraid to challenge hiring managers or deliver difficult feedback to candidates.</li>
-                    </ul>
-                </li>
-            </ul>
-        </section>
-
-        <section id="sourcing-landscape">
-            <h2>3. Target Sourcing Landscape (Market Map)</h2>
-            <p>Given the emphasis on proactive headhunting for "passive" candidates, job boards are secondary. The focus should be on direct sourcing.</p>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Target Sector</th>
-                        <th>Why They Are a Good Fit</th>
-                        <th>Sample Companies (Illustrative)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>High-Growth Tech Startups/Scale-ups</strong></td>
-                        <td>Recruiters here are used to ambiguity, high-pressure targets, and the need for process improvement.</td>
-                        <td><code>Grab</code>, <code>Foodpanda</code>, <code>AirAsia Super App</code>, <code>Carsome</code>, <code>Boost</code></td>
-                    </tr>
-                    <tr>
-                        <td><strong>In-house TA Teams at established Tech MNCs</strong></td>
-                        <td>These individuals often have strong structured sourcing skills but may be looking for a role with more impact and autonomy.</td>
-                        <td><code>Google</code>, <code>Meta</code>, <code>Microsoft</code>, <code>IBM</code>, <code>Oracle</code> (Malaysia offices)</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Specialized Recruitment Agencies (Tech Focus)</strong></td>
-                        <td>Agency recruiters have excellent headhunting and closing skills. The ideal candidate is one who is tired of the agency model and wants to build something in-house.</td>
-                        <td><code>Robert Walters</code>, <code>Michael Page</code>, <code>Hays</code> (specifically their tech desks)</td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-
-        <section id="outreach-generator">
-            <h2>✨ Forensic Outreach Generator</h2>
-            <p>Generate a hyper-personalized outreach message by pasting text, uploading a resume, or providing a profile URL.</p>
-            
-            <div class="input-tabs">
-                <button class="tab-btn active" data-tab="text">Paste Text</button>
-                <button class="tab-btn" data-tab="file">Upload Resume</button>
-                <button class="tab-btn" data-tab="url">Profile URL</button>
+                <div class="header-actions">
+                    <button id="open-outreach" class="btn outline-red" type="button">
+                        <i data-lucide="sparkles" width="18" height="18"></i>
+                        Outreach ✨
+                    </button>
+                    <button id="open-intel" class="btn primary" type="button">
+                        <i data-lucide="brain-circuit" width="18" height="18"></i>
+                        Intel ✨
+                    </button>
+                </div>
             </div>
 
-            <div id="text-input-tab" class="tab-content active">
-                <textarea id="candidate-profile-text" placeholder="Paste candidate profile text here..."></textarea>
-            </div>
-            <div id="file-input-tab" class="tab-content">
-                <input type="file" id="resume-file-input" accept=".pdf">
-            </div>
-            <div id="url-input-tab" class="tab-content">
-                <input type="text" id="profile-url-input" placeholder="https://www.linkedin.com/in/candidate...">
-            </div>
-            
-            <button id="generate-outreach-btn">Generate Message</button>
-            <div id="outreach-output" class="output-area"></div>
-        </section>
+            <!-- Main Board Canvas -->
+            <div class="board">
+                <div class="grid">
+                    <!-- Recruiter Persona -->
+                    <div class="section-header">
+                        <div class="section-header-row">
+                            <h2 class="section-title"><span class="dot">T</span> The Role Identity</h2>
+                            <span class="badge red">CORE DNA</span>
+                        </div>
+                        <p class="section-subtitle">This is not a standard high-volume, process-driven role.</p>
+                    </div>
 
-        <section id="compensation-analysis">
-            <h2>4. Estimated Compensation Analysis (Malaysia)</h2>
-            <p>The salary for a Talent Acquisition Specialist/Recruiter in Malaysia with 3–5 years of experience varies based on the industry and company scale. The market rate is competitive for candidates with a strong track record in closing technical or difficult-to-fill roles.</p>
-            <div class="salary-range">
-                <p>Estimated Monthly Salary Range:</p>
-                <strong>MYR 7,500 – MYR 12,000</strong>
+                    <div class="sticky bg-red">
+                        <div class="top">
+                            <i data-lucide="target" width="18" height="18"></i>
+                            <h3>Judge of Character</h3>
+                        </div>
+                        <div class="content">• Focus on strong intuition and assessment skills.
+• Avoid keyword-only matching.
+• Screen for cultural fit + potential.</div>
+                    </div>
+                    <div class="sticky bg-orange">
+                        <div class="top">
+                            <i data-lucide="trash-2" width="18" height="18"></i>
+                            <h3>Process Improver</h3>
+                        </div>
+                        <div class="content">• History of fixing inefficiencies.
+• Eliminates manual loops.
+• Builds a better hiring system.</div>
+                    </div>
+                    <div class="sticky bg-blue">
+                        <div class="top">
+                            <i data-lucide="sparkles" width="18" height="18"></i>
+                            <h3>AI Collaborator</h3>
+                        </div>
+                        <div class="content">• Not a tech expert requirement.
+• Must be eager to automate “noise”.
+• Leverages tools to move faster.</div>
+                    </div>
+                    <div class="sticky bg-slate">
+                        <div class="top">
+                            <i data-lucide="construction" width="18" height="18"></i>
+                            <h3>Resilient & Adaptable</h3>
+                        </div>
+                        <div class="content">• Thrives in ambiguity.
+• “Busy kitchen being renovated” reality.
+• Operates fluidly under change.</div>
+                    </div>
+
+                    <!-- Candidate Persona -->
+                    <div class="section-header">
+                        <div class="section-header-row">
+                            <h2 class="section-title"><span class="dot">I</span> Ideal Candidate Persona</h2>
+                        </div>
+                        <p class="section-subtitle">The archetype to source and screen for.</p>
+                    </div>
+
+                    <div class="sticky bg-red">
+                        <div class="top">
+                            <i data-lucide="users" width="18" height="18"></i>
+                            <h3>Experience Level</h3>
+                        </div>
+                        <div class="content">• 3–5 years in Talent Acquisition.
+• Autonomous, still hands-on sourcing.
+• Not removed from execution.</div>
+                    </div>
+                    <div class="sticky bg-orange">
+                        <div class="top">
+                            <i data-lucide="trending-up" width="18" height="18"></i>
+                            <h3>Track Record</h3>
+                        </div>
+                        <div class="content">• Proven closing of “difficult” / niche roles.
+• Ask for specific examples.
+• Evidence > claims.</div>
+                    </div>
+                    <div class="sticky bg-blue">
+                        <div class="top">
+                            <i data-lucide="zap" width="18" height="18"></i>
+                            <h3>Mentality</h3>
+                        </div>
+                        <div class="content">• Efficiency-obsessed.
+• Data-informed intuition.
+• Courageous communicator (pushes back when needed).</div>
+                    </div>
+                    <div class="sticky bg-slate">
+                        <div class="top">
+                            <i data-lucide="message-square" width="18" height="18"></i>
+                            <h3>How they communicate</h3>
+                        </div>
+                        <div class="content">• Not afraid of difficult feedback.
+• Challenges hiring managers.
+• Clear, direct, calm under pressure.</div>
+                    </div>
+
+                    <!-- Market Map -->
+                    <div class="section-header">
+                        <div class="section-header-row">
+                            <h2 class="section-title"><span class="dot">M</span> Market Map</h2>
+                            <span class="badge red">SOURCING</span>
+                        </div>
+                        <p class="section-subtitle">Proactive headhunting first; job boards second.</p>
+                    </div>
+
+                    <div class="triple">
+                        <div class="panel">
+                            <h4 style="color: var(--deriv-red);"><i data-lucide="search" width="16" height="16"></i> High-Growth Startups/Scale-ups</h4>
+                            <div class="muted">Used to ambiguity, high-pressure targets, and process improvement.</div>
+                            <ul>
+                                <li>Grab</li>
+                                <li>Foodpanda</li>
+                                <li>AirAsia Super App</li>
+                                <li>Carsome</li>
+                                <li>Boost</li>
+                            </ul>
+                        </div>
+                        <div class="panel">
+                            <h4 style="color: #2563eb;"><i data-lucide="building-2" width="16" height="16"></i> Tech MNC In-house TA</h4>
+                            <div class="muted">Strong structured sourcing skills; may want more impact and autonomy.</div>
+                            <ul>
+                                <li>Google (MY)</li>
+                                <li>Meta (MY)</li>
+                                <li>Microsoft (MY)</li>
+                                <li>IBM (MY)</li>
+                                <li>Oracle (MY)</li>
+                            </ul>
+                        </div>
+                        <div class="panel">
+                            <h4 style="color: #7c3aed;"><i data-lucide="briefcase" width="16" height="16"></i> Specialized Agencies (Tech)</h4>
+                            <div class="muted">Excellent headhunting + closing; target those seeking in-house build work.</div>
+                            <ul>
+                                <li>Robert Walters (Tech)</li>
+                                <li>Michael Page (Tech)</li>
+                                <li>Hays (Tech desk)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Compensation -->
+                    <div class="section-header">
+                        <div class="section-header-row">
+                            <h2 class="section-title"><span class="dot">C</span> Compensation (Malaysia)</h2>
+                            <span class="badge red">MYR</span>
+                        </div>
+                        <p class="section-subtitle">Estimated range for 3–5 years experience; varies by industry and company scale.</p>
+                    </div>
+
+                    <div class="money">
+                        <div>
+                            <div class="label">Estimated Monthly Base (Gross)</div>
+                            <div class="value red">MYR 7.5k – 12k</div>
+                            <p class="note">Competitive for candidates who close technical / difficult-to-fill roles</p>
+                        </div>
+                        <div>
+                            <div class="label">Context</div>
+                            <div class="value green">Range varies</div>
+                            <p class="note">Can be higher with exceptional technical sourcing or proven system-building</p>
+                        </div>
+                        <div>
+                            <div class="label">Sources</div>
+                            <div class="ref">
+                                <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                                    <a href="https://www.glassdoor.com/Salaries/malaysia-talent-acquisition-specialist-salary-SRCH_IL.0,8_IN170_KO9,38.htm" target="_blank" rel="noopener">Glassdoor MY</a>
+                                    <a href="https://www.payscale.com/research/MY/Job=Talent_Acquisition_Specialist/Salary" target="_blank" rel="noopener">PayScale</a>
+                                    <a href="https://my.indeed.com/career/talent-acquisition-specialist/salaries" target="_blank" rel="noopener">Indeed MY</a>
+                                    <a href="https://www.hays.com.my/salary-guide" target="_blank" rel="noopener">Hays 2024</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer info -->
+                <div class="footer">
+                    <div class="left">
+                        <span><i data-lucide="shield-check" width="14" height="14" style="color: var(--deriv-red);"></i> SATI Verified</span>
+                        <span><i data-lucide="coffee" width="14" height="14" style="color: #fb923c;"></i> Busy Kitchen Reality</span>
+                    </div>
+                    <div class="right">HR-AI-2026-MALAYSIA // DERIV STRATEGY</div>
+                </div>
             </div>
-            <div class="note">
-                <p><strong>Note:</strong> This range is an estimate and can be higher for candidates with exceptional skills in technical sourcing or a proven ability to build and improve recruitment systems.</p>
-                <p style="margin-top: 1rem; font-size: 0.9rem;"><strong>📚 Sources:</strong> 
-                    <a href="https://www.glassdoor.com/Salaries/malaysia-talent-acquisition-specialist-salary-SRCH_IL.0,8_IN170_KO9,38.htm" target="_blank" rel="noopener" style="color: var(--deriv-red);">Glassdoor Malaysia</a> | 
-                    <a href="https://www.payscale.com/research/MY/Job=Talent_Acquisition_Specialist/Salary" target="_blank" rel="noopener" style="color: var(--deriv-red);">PayScale</a> | 
-                    <a href="https://my.indeed.com/career/talent-acquisition-specialist/salaries" target="_blank" rel="noopener" style="color: var(--deriv-red);">Indeed Malaysia</a> | 
-                    <a href="https://www.hays.com.my/salary-guide" target="_blank" rel="noopener" style="color: var(--deriv-red);">Hays Salary Guide 2024</a>
-                </p>
-            </div>
-        </section>
+        </div>
     </div>
 
     <!-- Invisible Turnstile Widget for auto-refresh -->
@@ -436,15 +876,69 @@
         </div>
     </div>
 
-    <!-- Market Intelligence Chat Widget -->
-    <div id="market-chat-widget">
-        <div id="chat-header">✨ Market Intelligence Chat</div>
-        <div id="chat-body">
-            <div class="chat-message assistant-message">Ask me about the Malaysian talent market!</div>
-        </div>
-        <div id="chat-input-container">
-            <input type="text" id="chat-input" placeholder="Ask a question...">
-            <button id="send-chat-btn">Send</button>
+    <!-- AI Tool Modal (Outreach + Intel) -->
+    <div id="ai-modal" class="modal-overlay" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="ai-modal-title">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i id="ai-modal-icon" data-lucide="sparkles" width="22" height="22"></i>
+                    <h2 id="ai-modal-title">AI Tool</h2>
+                </div>
+                <button id="close-modal" class="icon-btn" type="button" aria-label="Close">
+                    <i data-lucide="x" width="20" height="20"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Outreach Tool -->
+                <div id="tool-outreach" class="tool">
+                    <p class="muted">Generate a hyper-personalized outreach message by pasting text, uploading a resume, or providing a profile URL.</p>
+
+                    <div class="input-tabs">
+                        <button class="tab-btn active" data-tab="text" type="button">Paste Text</button>
+                        <button class="tab-btn" data-tab="file" type="button">Upload Resume</button>
+                        <button class="tab-btn" data-tab="url" type="button">Profile URL</button>
+                    </div>
+
+                    <div id="text-input-tab" class="tab-content">
+                        <textarea id="candidate-profile-text" placeholder="Paste candidate profile text here..."></textarea>
+                    </div>
+                    <div id="file-input-tab" class="tab-content hidden">
+                        <input type="file" id="resume-file-input" accept="application/pdf,.pdf">
+                        <p class="muted" style="margin: 8px 0 0 0;">PDF only. Recommended ≤ 5MB.</p>
+                    </div>
+                    <div id="url-input-tab" class="tab-content hidden">
+                        <input type="text" id="profile-url-input" placeholder="https://www.linkedin.com/in/candidate...">
+                        <p class="muted" style="margin: 8px 0 0 0;">Allowed: https://… (public profile URL)</p>
+                    </div>
+
+                    <button id="generate-outreach-btn" class="action-btn" data-action-button="true" type="button">
+                        <i data-lucide="sparkles" width="18" height="18"></i>
+                        Generate ✨ Outreach
+                    </button>
+
+                    <div id="outreach-output" class="output" style="display:none;">
+                        <div class="output-label"><i data-lucide="zap" width="14" height="14"></i> AI Powered Insight</div>
+                        <div id="outreach-output-text"></div>
+                    </div>
+                </div>
+
+                <!-- Intel Tool -->
+                <div id="tool-chat" class="tool">
+                    <p class="muted">Ask anything about the Malaysian tech talent market (salary, competitors, trends). Turnstile protected.</p>
+
+                    <div class="chat">
+                        <div id="chat-body" class="chat-body" aria-live="polite">
+                            <div class="chat-message assistant-message">Ask me about the Malaysian talent market!</div>
+                        </div>
+
+                        <div class="chat-input-row">
+                            <input type="text" id="chat-input" placeholder="Ask a question..." maxlength="800">
+                            <button id="send-chat-btn" class="chat-send" data-action-button="true" type="button">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
